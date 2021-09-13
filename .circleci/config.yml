@@ -1,0 +1,30 @@
+version: 2.1
+orbs:
+  ruby: circleci/ruby@0.1.2 
+
+jobs:
+  build:
+    docker:
+      - image: cimg/ruby:3.0.2
+    executor: ruby/default
+    steps:
+      - run:
+          name: Install tools
+          command: |
+            gem install bundler
+      - checkout
+      - run:
+          name: gem install
+          command: | 
+            bundle install
+      - run:
+          name: rubocop
+          command: bundle exec rubocop
+      - run:
+          name: db setup
+          command: |
+            bundle exec rails db:create
+            bundle exec rails db:migrate
+      - run:
+          name: rspec
+          command: bundle exec rspec
