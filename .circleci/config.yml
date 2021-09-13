@@ -6,6 +6,13 @@ jobs:
   build:
     docker:
       - image: cimg/ruby:3.0.2
+        environment:
+          RAILS_ENV: test
+          DB_PASSWORD: password
+      - image: circleci/mysql:8.0.26-ram
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: password
     executor: ruby/default
     steps:
       - run:
