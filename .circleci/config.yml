@@ -1,0 +1,52 @@
+version: 2.1
+orbs:
+  ruby: circleci/ruby@0.1.2 
+
+jobs:
+  build:
+    docker:
+      - image: cimg/ruby:3.0.2
+        environment:
+          RAILS_ENV: test
+          DB_USER: root
+          DB_PASSWORD: password
+          DB_HOST: 127.0.0.1
+      - image: circleci/mysql:8.0.26-ram
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: password
+        command: mysqld --default-authentication-plugin=mysql_native_password
+    executor: ruby/default
+    steps:
+      - run:
+          name: Install tools
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y \
+              nodejs \
+              dnsutils \
+              net-tools \
+              locales \
+              wget \
+              lsb-release \
+              imagemagick \
+              gnupg \
+              cron \
+              default-mysql-client
+            gem install bundler
+      - checkout
+      - run:
+          name: gem install
+          command: | 
+            bundle install
+      - run:
+          name: rubocop
+          command: bundle exec rubocop
+      - run:
+          name: db setup
+          command: |
+            bundle exec rails db:create
+            bundle exec rails db:migrate
+      - run:
+          name: rspec
+          command: bundle exec rspec
