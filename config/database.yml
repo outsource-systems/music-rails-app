@@ -50,6 +50,4 @@ test:
 #
 production:
   <<: *default
-  database: music_rails_app_production
-  username: music_rails_app
-  password: <%= ENV['MUSIC_RAILS_APP_DATABASE_PASSWORD'] %>
+  database: <%= ENV['DB_NAME'] %>
