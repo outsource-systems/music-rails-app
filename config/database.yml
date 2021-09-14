@@ -13,20 +13,20 @@ default: &default
   adapter: mysql2
   encoding: utf8mb4
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: root
-  password:
-  socket: /tmp/mysql.sock
+  username: <%= ENV["DB_USER"] %>
+  password: <%= ENV["DB_PASSWORD"] %>
+  host: <%= ENV['DB_HOST'] %>
 
 development:
   <<: *default
-  database: music_rails_app_api_development
+  database: music_rails_app_development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: music_rails_app_api_test
+  database: music_rails_app_test
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -50,6 +50,6 @@ test:
 #
 production:
   <<: *default
-  database: music_rails_app_api_production
-  username: music_rails_app_api
-  password: <%= ENV['MUSIC_RAILS_APP_API_DATABASE_PASSWORD'] %>
+  database: music_rails_app_production
+  username: music_rails_app
+  password: <%= ENV['MUSIC_RAILS_APP_DATABASE_PASSWORD'] %>
