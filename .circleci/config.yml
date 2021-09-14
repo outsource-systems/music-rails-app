@@ -56,3 +56,9 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "develop" ]; then
               git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git develop:main
             fi
+      - deploy:
+          name: Deploy Production to Heroku
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME_PROD.git master:main
+            fi
