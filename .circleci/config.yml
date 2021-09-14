@@ -54,4 +54,5 @@ jobs:
           name: Deploy Staging to Heroku
           command: |
             if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+              https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git develop:main
             fi
