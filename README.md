@@ -1,5 +1,12 @@
 # README
 
+setup
+```
+cp .envrc_sample .envrc
+bundle install
+yarn install
+```
+
 This README would normally document whatever steps are necessary to get the
 application up and running.
 
