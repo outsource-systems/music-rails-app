@@ -4,6 +4,7 @@ class CreateProducts < ActiveRecord::Migration[6.1]
       t.string :title, null: false
       t.date :release_date, null: false
       t.string :poster_url
+      t.string :spotify_id
       t.string :type, null: false
 
       t.timestamps

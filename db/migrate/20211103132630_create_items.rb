@@ -5,6 +5,7 @@ class CreateItems < ActiveRecord::Migration[6.1]
       t.time :time, null: false
       t.string :poster_url
       t.string :url, null: false
+      t.string :spotify_id
       t.string :type, null: false
 
       t.timestamps
