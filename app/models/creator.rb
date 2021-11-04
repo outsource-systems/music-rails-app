@@ -1,4 +1,4 @@
-class Creater < ApplicationRecord
+class Creator < ApplicationRecord
   validates :name, presence: true, length: { maximum: 255 }
   validates :poster_url, length: { maximum: 255 }
 

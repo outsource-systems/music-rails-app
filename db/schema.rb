@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 2021_11_03_142415) do
     t.index ["product_id", "category_id"], name: "index_category_product_assignments_on_product_id_and_category_id", unique: true
   end
 
-  create_table "creaters", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "creators", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
     t.string "poster_url"
@@ -44,12 +44,12 @@ ActiveRecord::Schema.define(version: 2021_11_03_142415) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "item_creater_assignments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "item_creator_assignments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "item_id", null: false
-    t.bigint "creater_id", null: false
+    t.bigint "creator_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["item_id", "creater_id"], name: "index_item_creater_assignments_on_item_id_and_creater_id", unique: true
+    t.index ["item_id", "creator_id"], name: "index_item_creator_assignments_on_item_id_and_creator_id", unique: true
   end
 
   create_table "items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
