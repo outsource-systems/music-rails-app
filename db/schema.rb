@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_03_142415) do
+ActiveRecord::Schema.define(version: 2021_11_06_135231) do
 
   create_table "categories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2021_11_03_142415) do
   create_table "category_item_assignments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "item_id", null: false
     t.bigint "category_id", null: false
+    t.bigint "sort_number"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["item_id", "category_id"], name: "index_category_item_assignments_on_item_id_and_category_id", unique: true
@@ -29,9 +30,26 @@ ActiveRecord::Schema.define(version: 2021_11_03_142415) do
   create_table "category_product_assignments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "product_id", null: false
     t.bigint "category_id", null: false
+    t.bigint "sort_number"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["product_id", "category_id"], name: "index_category_product_assignments_on_product_id_and_category_id", unique: true
+  end
+
+  create_table "creator_item_assignments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "creator_id", null: false
+    t.bigint "item_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["creator_id", "item_id"], name: "index_creator_item_assignments_on_creator_id_and_item_id", unique: true
+  end
+
+  create_table "creator_product_assignments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "creator_id", null: false
+    t.bigint "product_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["creator_id", "product_id"], name: "index_creator_product_assignments_on_creator_id_and_product_id", unique: true
   end
 
   create_table "creators", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -44,31 +62,25 @@ ActiveRecord::Schema.define(version: 2021_11_03_142415) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "item_creator_assignments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "item_id", null: false
-    t.bigint "creator_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["item_id", "creator_id"], name: "index_item_creator_assignments_on_item_id_and_creator_id", unique: true
-  end
-
   create_table "items", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "title", null: false
+    t.string "name", null: false
     t.time "time", null: false
     t.string "poster_url"
     t.string "url", null: false
     t.string "spotify_id"
     t.string "type", null: false
+    t.bigint "product_id"
+    t.integer "sort_number", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "products", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "title", null: false
+    t.string "name", null: false
     t.date "release_date", null: false
     t.string "poster_url"
     t.string "spotify_id"
-    t.string "type", null: false
+    t.string "record_type", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

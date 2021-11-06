@@ -42,7 +42,11 @@ group :development do
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem "aws-sdk"
 gem "carrierwave"
-gem "fog"
+gem "dotenv-rails"
+gem "fog-aws"
+gem "jbuilder"
+gem "ransack"
 gem "rspotify"
 gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
