@@ -119,6 +119,27 @@ class ImportDataFromSpotifyService
     end
   end
 
+  def update_items_product_id
+    index = 0
+    loop do
+      p "start loop"
+      offset = 50 * index
+      albums = @artist.albums(limit: 50, offset: offset)
+      albums.each_with_index do |album, album_index|
+        p "start save album index: #{album_index}"
+        product = Product.find_by(spotify_id: album.id)
+        album.tracks_cache.each do |track|
+          item = Item.find_by(spotify_id: track.id)
+          item.update(product_id: product.id) if item.present?
+        end
+        p "finish save album index: #{album_index}"
+      end
+      break if albums.count < 50
+
+      index += 1
+    end
+  end
+
   private
 
   def update_artist_product_assignment(artist, product)
@@ -161,7 +182,7 @@ class ImportDataFromSpotifyService
     # productの保存
     product = Product.create!(
       name: album.name,
-      release_date: album.release_date, # TODO: 文字列をdateに変換する必要あり
+      release_date: album.release_date,
       remote_poster_url_url: album.images.first["url"],
       spotify_id: album.id,
       record_type: album.album_type,
@@ -184,11 +205,11 @@ class ImportDataFromSpotifyService
 
     # トラックを保存
     album.tracks_cache.each_with_index do |track, index|
-      save_track(track, index, artist_name)
+      save_track(track, index, artist_name, product)
     end
   end
 
-  def save_track(track, index, artist_name)
+  def save_track(track, index, artist_name, product = nil)
     p "start save track index: #{index}"
     track_name = "#{track.name} - #{artist_name} - #{track.album.name}"
     p track_name
@@ -199,10 +220,12 @@ class ImportDataFromSpotifyService
 
     audio = Audio.new(
       name: track.name,
-      time: Time.new(2000, 1, 1, 0, 1, 32).strftime("%M:%S"), # TODO: 秒数の数字を文字にする
+      time: Time.at(track.duration_ms), # TODO: 秒数の数字を文字にする
       sort_number: track.track_number,
-      spotify_id: track.id,
+      spotify_id: track.id
     )
+    audio.product_id = product.id if product.present?
+
     if File.exist?(local_filename)
       audio.url = File.open(local_filename)
     else

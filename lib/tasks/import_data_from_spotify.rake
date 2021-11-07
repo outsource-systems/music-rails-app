@@ -29,4 +29,9 @@ namespace :import_data do
     service.update_artists_product_assignment
     service.update_artists_item_assignment
   end
+
+  task update_items_product_id: :environment do
+    service = ImportDataFromSpotifyService.new("5ueB0CVSf1FYLCRCQeycLY")
+    service.update_items_product_id
+  end
 end

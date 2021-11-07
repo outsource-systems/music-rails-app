@@ -4,6 +4,8 @@ class Item < ApplicationRecord
   validates :url, presence: true
   validates :spotify_id, length: { maximum: 255 }
 
+  belongs_to :product
+
   has_many :category_item_assignments, dependent: :destroy
   has_many :categories, through: :category_item_assignments
 
