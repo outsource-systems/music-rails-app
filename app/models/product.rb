@@ -11,4 +11,5 @@ class Product < ApplicationRecord
 
   has_many :creator_product_assignments, dependent: :destroy
   has_many :creators, through: :creator_product_assignments
+  has_many :artists, -> { where(type: 'Artist') }, through: :creator_product_assignments, source: :creator
 end
