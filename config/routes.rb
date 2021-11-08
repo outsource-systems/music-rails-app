@@ -4,8 +4,8 @@ Rails.application.routes.draw do
   namespace 'api', { format: 'json' }  do
     namespace 'v1' do
       resources :home, only: [:index]
-      resources :products, only: [:index]
-      resources :items, only: [:index]
+      resources :products, only: %i[index show]
+      resources :items, only: %i[index show]
     end
   end
 end

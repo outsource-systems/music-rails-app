@@ -47,6 +47,7 @@ gem "carrierwave"
 gem "dotenv-rails"
 gem "fog-aws"
 gem "jbuilder"
+gem "kaminari"
 gem "ransack"
 gem "rspotify"
 gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]

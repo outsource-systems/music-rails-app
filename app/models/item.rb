@@ -11,6 +11,7 @@ class Item < ApplicationRecord
 
   has_many :creator_item_assignments, dependent: :destroy
   has_many :creators, through: :creator_item_assignments
+  has_many :artists, -> { where(type: "Artist") }, through: :creator_item_assignments, source: :creator
 
   mount_uploader :poster_url, ImageUploader
   mount_uploader :url, ImageUploader

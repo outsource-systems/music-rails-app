@@ -140,6 +140,12 @@ class ImportDataFromSpotifyService
     end
   end
 
+  def update_product_type
+    Product.all.each do |product|
+      product.update(record_type: product.record_type.capitalize )
+    end
+  end
+
   private
 
   def update_artist_product_assignment(artist, product)
@@ -222,7 +228,7 @@ class ImportDataFromSpotifyService
       name: track.name,
       time: Time.at(track.duration_ms), # TODO: 秒数の数字を文字にする
       sort_number: track.track_number,
-      spotify_id: track.id
+      spotify_id: track.id,
     )
     audio.product_id = product.id if product.present?
 
