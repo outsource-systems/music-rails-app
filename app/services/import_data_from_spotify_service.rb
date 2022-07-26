@@ -42,18 +42,18 @@ class ImportDataFromSpotifyService
     creator_artist = create_artist(artist) if creator_artist.blank?
     CreatorItemAssignment.create(creator_id: creator_artist.id, item_id: item.id)
   end
-  
+
   def create_artist(artist)
     return if Artist.exists?(spotify_id: artist.id)
 
     creator_artist = Artist.new(name: artist.name,
-                                         spotify_id: artist.id)
+                                spotify_id: artist.id)
     creator_artist.remote_poster_url_url = artist.images.first["url"] if artist.images.present?
     creator_artist.save!
     creator_artist
   end
 
-  def save_album(album)
+  def save_album(album) # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
     return if Product.exists?(spotify_id: album.id)
 
     # productの保存

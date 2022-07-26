@@ -8,4 +8,3 @@ if params[:is_fetch_items]
   json.partial! "api/v1/items/items", items: product.items
 end
 json.partial! "api/v1/artists/artists", artists: product.artists
-
