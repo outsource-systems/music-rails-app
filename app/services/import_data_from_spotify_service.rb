@@ -22,8 +22,6 @@ class ImportDataFromSpotifyService
     end
 
     save_top_tracks
-    update_artists_product_assignment
-    update_artists_item_assignment
   end
 
   def save_top_tracks
@@ -37,145 +35,18 @@ class ImportDataFromSpotifyService
     end
   end
 
-  def update_artists_poster_url
-    index = 0
-    loop do
-      p "start loop"
-      offset = 50 * index
-      albums = @artist.albums(limit: 50, offset: offset)
-      albums.each_with_index do |album, album_index|
-        p "start save album index: #{album_index}"
-        album.artists.each do |artist|
-          p artist.name
-          update_artist_poster_url(artist)
-        end
-        p "finish save album index: #{album_index}"
-      end
-      break if albums.count < 50
-
-      index += 1
-    end
-  end
-
-  def update_albums_poster_url
-    index = 0
-    loop do
-      p "start loop"
-      offset = 50 * index
-      albums = @artist.albums(limit: 50, offset: offset)
-      albums.each_with_index do |album, album_index|
-        p "start save album index: #{album_index}"
-        update_album_poster_url(album)
-        p "finish save album index: #{album_index}"
-      end
-      break if albums.count < 50
-
-      index += 1
-    end
-  end
-
-  def update_artists_product_assignment
-    index = 0
-    loop do
-      p "start loop"
-      offset = 50 * index
-      albums = @artist.albums(limit: 50, offset: offset)
-      albums.each_with_index do |album, album_index|
-        p "start save album index: #{album_index}"
-
-        product = Product.find_by(spotify_id: album.id)
-        album.artists.each do |artist|
-          update_artist_product_assignment(artist, product)
-        end
-        p "finish save album index: #{album_index}"
-      end
-      break if albums.count < 50
-
-      index += 1
-    end
-  end
-
-  def update_artists_item_assignment
-    index = 0
-    loop do
-      p "start loop"
-      offset = 50 * index
-      albums = @artist.albums(limit: 50, offset: offset)
-      albums.each_with_index do |album, album_index|
-        p "start save album index: #{album_index}"
-        album.tracks_cache.each do |track|
-          item = Item.find_by(spotify_id: track.id)
-          if item.present?
-            track.artists.each do |artist|
-              update_artist_item_assignment(artist, track)
-            end
-          end
-        end
-        p "finish save album index: #{album_index}"
-      end
-      break if albums.count < 50
-
-      index += 1
-    end
-  end
-
-  def update_items_product_id
-    index = 0
-    loop do
-      p "start loop"
-      offset = 50 * index
-      albums = @artist.albums(limit: 50, offset: offset)
-      albums.each_with_index do |album, album_index|
-        p "start save album index: #{album_index}"
-        product = Product.find_by(spotify_id: album.id)
-        album.tracks_cache.each do |track|
-          item = Item.find_by(spotify_id: track.id)
-          item.update(product_id: product.id) if item.present?
-        end
-        p "finish save album index: #{album_index}"
-      end
-      break if albums.count < 50
-
-      index += 1
-    end
-  end
-
-  def update_product_type
-    Product.all.each do |product|
-      product.update(record_type: product.record_type.capitalize )
-    end
-  end
-
   private
 
-  def update_artist_product_assignment(artist, product)
-    creator_artist = Creator::Artist.find_by(spotify_id: artist.id)
-    creator_artist = create_artist(artist) if creator_artist.blank?
-    CreatorProductAssignment.create(creator_id: creator_artist.id, product_id: product.id)
-  end
-
   def update_artist_item_assignment(artist, item)
-    creator_artist = Creator::Artist.find_by(spotify_id: artist.id)
+    creator_artist = Artist.find_by(spotify_id: artist.id)
     creator_artist = create_artist(artist) if creator_artist.blank?
     CreatorItemAssignment.create(creator_id: creator_artist.id, item_id: item.id)
   end
-
-  def update_artist_poster_url(artist)
-    creator_artist = Creator::Artist.find_by(spotify_id: artist.id)
-    if creator_artist.present? && creator_artist.poster_url.blank?
-      creator_artist.update!(remote_poster_url_url: artist.images.first["url"])
-    end
-  end
-
-  def update_album_poster_url(album)
-    product = Product.find_by(spotify_id: album.id)
-    product.update!(remote_poster_url_url: album.images.first["url"]) if product.present?
-  end
-
+  
   def create_artist(artist)
-    return if Creator::Artist.exists?(spotify_id: artist.id)
+    return if Artist.exists?(spotify_id: artist.id)
 
-    creator_artist = Creator::Artist.new(name: artist.name,
+    creator_artist = Artist.new(name: artist.name,
                                          spotify_id: artist.id)
     creator_artist.remote_poster_url_url = artist.images.first["url"] if artist.images.present?
     creator_artist.save!
@@ -195,9 +66,11 @@ class ImportDataFromSpotifyService
     )
 
     # アーティストを保存
-    # Creator::Artist
+    # Artist
     album.artists.each do |artist|
       create_artist(artist)
+      creator_artist = Artist.find_by(spotify_id: artist.id)
+      CreatorProductAssignment.create(creator_id: creator_artist.id, product_id: product.id)
     end
 
     # genresをcategoryに保存
@@ -212,6 +85,12 @@ class ImportDataFromSpotifyService
     # トラックを保存
     album.tracks_cache.each_with_index do |track, index|
       save_track(track, index, artist_name, product)
+      item = Item.find_by(spotify_id: track.id)
+      if item.present?
+        track.artists.each do |artist|
+          update_artist_item_assignment(artist, item)
+        end
+      end
     end
   end
 
