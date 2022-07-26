@@ -1,3 +1,10 @@
 export DB_USER=root
 export DB_PASSWORD=password
 export DB_HOST=localhost
+export DB_NAME=music_rails_app_production
+export SPOTIFY_CLIENT_ID=
+export SPOTIFY_CLIENT_SECRET=
+export CARRIERWAVE_PROVIDER=
+export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY=
+export AWS_REGION=
